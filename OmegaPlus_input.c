@@ -2137,10 +2137,12 @@ int readAlignmentMACS(FILE *fp, alignment_struct *alignment, int imputeG, int im
 	mySnpTable[0] = malloc(DIM2*sizeof(char));
 
 	alignment->positions = malloc(DIM*sizeof(float));
-
+	alignment->mutationTime = calloc(DIM, sizeof(float));
+	
 	// read first line 
-	int temp = fscanf(fp, "%f", &alignment->positions[0]);
-	temp = temp;
+	int temp = fscanf(fp, "%f %f", &alignment->positions[0], &alignment->mutationTime[0]);
+	assert(temp == 2);
+	//temp = temp;
 
 	// read first SNP
 	while((ent = fgetc(fp)))
@@ -2177,6 +2179,7 @@ int readAlignmentMACS(FILE *fp, alignment_struct *alignment, int imputeG, int im
 			mySnpTable = realloc(mySnpTable, DIM*sizeof(char*));
 
 			alignment->positions = realloc(alignment->positions, DIM*sizeof(float));
+			alignment->mutationTime = realloc(alignment->mutationTime, DIM*sizeof(float));
 
 			for(i=prevDIM; i<DIM; ++i)
 				mySnpTable[i] = malloc(ninds+1 * sizeof(char));
@@ -2186,10 +2189,11 @@ int readAlignmentMACS(FILE *fp, alignment_struct *alignment, int imputeG, int im
 
 		if(!strcmp(siteflag,"SITE:"))
 		{
-			temp = fscanf(fp, "%d %f %s",&sitevar, &alignment->positions[nsnp], mySnpTable[nsnp]);
-
-			if(!strcmp(siteflag, "SITE:"))
-				nsnp++;
+		  temp = fscanf(fp, "%d %f %f %s",&sitevar, &alignment->positions[nsnp], &alignment->mutationTime[nsnp], mySnpTable[nsnp]);
+		  assert(temp == 4);
+		  
+		  if(!strcmp(siteflag, "SITE:"))
+		    nsnp++;
 		}
 		else
 			break;

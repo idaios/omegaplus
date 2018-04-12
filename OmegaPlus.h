@@ -138,6 +138,7 @@ typedef struct
 	int		 length;
 	int 		 segsites;
 	float 	       * positions;
+  float *mutationTime;
 	int 	       * positionsInd;
 	int 		 sequences;
 	char 	      ** seqtable;
